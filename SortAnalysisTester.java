@@ -1,7 +1,5 @@
 package coms311;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,15 +16,14 @@ public class SortAnalysisTester
 	}
 	
 	/**
-	 * 
 	 * @param size
 	 * @param mag
 	 * @return an 'size'-element ArrayList<Integer> with random integers from 0
 	 *         to mag
 	 */
-	public static ArrayList<Integer> randCase(int size, int mag)
+	public static ArrayList<Integer> randCaseMag(int size, int mag)
 	{
-		Random rand = new Random(System.currentTimeMillis());
+		Random rand = new Random(System.nanoTime());
 		
 		size = Math.max(0, size);
 		mag = Math.abs(mag);
@@ -39,86 +36,87 @@ public class SortAnalysisTester
 		return list;
 	}
 	
-	public static void testInsertionsSort(String fileLoc)
+	public static ArrayList<Integer> randCase(int size)
+	{
+		size = Math.max(0, size);
+		
+		ArrayList<Integer> sortedList = new ArrayList<Integer>();
+		for (int i = 0; i < size; i++)
+			sortedList.add(i);
+		
+		ArrayList<Integer> randList = new ArrayList<Integer>();
+		Random rand = new Random(System.nanoTime());
+		while (!sortedList.isEmpty())
+		{
+			int r = rand.nextInt(sortedList.size());
+			randList.add(sortedList.get(r));
+			sortedList.remove(r);
+		}
+		
+		return randList;
+	}
+	
+	public static void testInsertionsSort(PrintStream out, int maxArraySize, int incrementBy)
 	{
 		
-		File outFile = new File(fileLoc);
-		
-		PrintStream out;
-		try
-		{
-			out = new PrintStream(outFile);
-		}
-		catch (FileNotFoundException e)
-		{
-			System.err.println("File not found");
-			return;
-		}
+		maxArraySize = Math.max(0, maxArraySize);
+		incrementBy = Math.max(1, incrementBy);
 		
 		InsertionSort<Integer> is = new InsertionSort<Integer>();
 		
-		int size = 99999;
+		out.println("n,Best Case,Random Case,Worst Case");
 		
-		out.println("\"n\",\"Worst Case\",\"Random Case\",\"Best Case\"");
-		
-		for (int n = 0; n <= size; n += 1000)
+		for (int n = 0; n <= maxArraySize; n += incrementBy)
 		{
+			int randCase = is.analyzeSort(randCase(n));
 			int worstCase = is.analyzeSort(InsertionSort.worstCase(n));
-			int randCase = is.analyzeSort(randCase(n, n << 1));
-			int bestCase = is.analyzeSort(InsertionSort.bestCase(n));
-			out.println("\"" + n + "\",\"" + worstCase + "\",\"" + randCase + "\",\"" + bestCase + "\"");
+			// int bestCase = is.analyzeSort(InsertionSort.bestCase(n));
+			// out.println(n + "," + bestCase + "," + randCase + "," +
+			// worstCase);
+			out.println(n + "," + randCase + "," + worstCase);
 		}
-		
-		out.close();
-		
 	}
 	
-	public static void testMergeSort(String fileLoc)
+	public static void testMergeSort(PrintStream out, int maxArraySize, int incrementBy)
 	{
+		maxArraySize = Math.max(0, maxArraySize);
+		incrementBy = Math.max(1, incrementBy);
 		MergeSort<Integer> ms = new MergeSort<Integer>();
-		int n = 999;
-		for (int i = 0; i < 994; i++)
+		out.println("n,Best Case,Random Case,Worst Case");
+		for (int n = 0; n < maxArraySize; n += incrementBy)
 		{
-			ArrayList<Integer> list =randCase(i, 9); 
-			System.out.println(list.toString());
-			System.out.println(ms.analyzeSort(list));
-
+			int worstCase = ms.analyzeSort(MergeSort.worstCase(n));
+			int randCase = ms.analyzeSort(randCase(n));
+			// int bestCase = ms.analyzeSort(MergeSort.bestCase(n));
+			// out.println(n + "," + bestCase + "," + randCase + "," +
+			// worstCase);
+			out.println(n + "," + randCase + "," + worstCase);
+			
 		}
-		
-		
+	}
+	
+	public static void testQuickSort(PrintStream out, int maxArraySize, int incrementBy)
+	{
+		maxArraySize = Math.max(0, maxArraySize);
+		incrementBy = Math.max(1, incrementBy);
+		QuickSort<Integer> qs = new QuickSort<Integer>();
+		out.println("n,Best Case,Random Case,Worst Case");
+		for (int n = 0; n < maxArraySize; n += incrementBy)
 		{
-			ArrayList<Integer> list = randCase(n, 99);
-			
-			
-			int msTime = ms.analyzeSort(list);
-			System.out.println("n: " + n + "\t\tmergeSort: " + msTime);
+			int randCase = qs.analyzeSort(randCase(n));
+			int worstCase = qs.analyzeSort(QuickSort.worstCase(n));
+			// int bestCase = qs.analyzeSort(QuickSort.bestCase(n));
+			// out.println(n + "," + bestCase + "," + randCase + "," +
+			// worstCase);
+			out.println(n + "," + randCase + "," + worstCase);
 		}
 	}
 	
 	public static void main(String[] args)
 	{
-		System.out.println("Starting Tests...");
-		
-
-				
-		MergeSort<Integer> ms = new MergeSort<Integer>();
-		
-		int size = 9999;
-		
-		System.out.println("\"n\",\"Worst Case\",\"Random Case\",\"Best Case\"");
-		
-		for (int n = 0; n <= size; n += 100)
-		{
-			int worstCase = ms.analyzeSort(InsertionSort.worstCase(n));
-			int randCase = ms.analyzeSort(randCase(n, n << 1));
-			int bestCase = ms.analyzeSort(InsertionSort.bestCase(n));
-			System.out.println("\"" + n + "\",\"" + worstCase + "\",\"" + randCase + "\",\"" + bestCase + "\"");
-		}
-		
-		System.out.close();
-		
-		//testMergeSort("sdf");
-		
+		//testInsertionsSort(System.out, 10000, 100);
+		//testMergeSort(System.out, 90000, 1000);
+		testQuickSort(System.out, 20000, 1000);
 	}
 	
 }
