@@ -2,13 +2,9 @@ package coms311;
 
 import java.util.ArrayList;
 
-public class InsertionSort<E extends Comparable<? super E>> implements
-		SortAnalysis<E>
+public class InsertionSort<E extends Comparable<? super E>> implements SortAnalysis<E>
 {
 	
-	/**
-	 * DEFAULT CONSTRUCTOR
-	 */
 	InsertionSort()
 	{
 	}
@@ -16,10 +12,10 @@ public class InsertionSort<E extends Comparable<? super E>> implements
 	@Override
 	public int analyzeSort(ArrayList<E> list)
 	{
-		long beginMilli = System.currentTimeMillis();
+		long beginMilli= System.currentTimeMillis();
 		int size = list.size();
 		if (size <= 1)
-			return (int) (System.currentTimeMillis() - beginMilli);
+			return (int) (System.currentTimeMillis()-beginMilli);
 		
 		/*
 		 * Assume list[0] to [n-1] is sorted Start at index n and compare to the
@@ -43,12 +39,17 @@ public class InsertionSort<E extends Comparable<? super E>> implements
 					compareValue = list.get(n).compareTo(list.get(n - 1));
 			}
 		}
-		
-		return (int) (System.currentTimeMillis() - beginMilli);
+		return (int) (System.currentTimeMillis()-beginMilli);
 	}
 	
-	// Returns an ArrayList<Integer> of size "size" of the best case scenario
-	// for InsertionSort
+	// Returns
+	
+	/**
+	 * @param size
+	 *            - size of the array to be created
+	 * @return an ArrayList<Integer> of size "size" of the best case scenario
+	 *         for InsertionSort
+	 */
 	public static ArrayList<Integer> bestCase(int size)
 	{
 		size = Math.max(0, size);
@@ -60,17 +61,20 @@ public class InsertionSort<E extends Comparable<? super E>> implements
 		return list;
 	}
 	
-	// Returns an ArrayList<Integer> of size "size" of the worst case scenario
-	// for InsertionSort
+	/**
+	 * @param size
+	 *            size of the array to be created
+	 * @return an ArrayList<Integer> of size "size" of the worst case scenario
+	 *         for InsertionSort
+	 */
 	public static ArrayList<Integer> worstCase(int size)
 	{
 		size = Math.max(0, size);
+		
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < size; i++)
 			list.add(size - i);
 		
 		return list;
 	}
-	
-	
 }
